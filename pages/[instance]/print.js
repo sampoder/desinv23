@@ -44,7 +44,7 @@ export default function Viewer({ blob, instance }) {
             github.com/sampoder/photo-booth
           </h2>
         </div>
-        <img onClick={() => exportAsPDF()} style={{ border: '8px solid white', borderRadius: 8}} src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://localhost:3001/${instance}/${(data?.blob || blob).timestamp}`} />
+        <img onClick={() => exportAsPDF()} style={{ border: '8px solid white', borderRadius: 8}} src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://photobooth.sampoder.com/${instance}/${(data?.blob || blob).timestamp}`} />
       </div>
       <style>{`
         @media print {

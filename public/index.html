@@ -41,6 +41,7 @@
       
       function preload() {
         instanceId = prompt("What should this instance be?")
+        window.open(`https://photobooth.sampoder.com/${instanceId}/print`, '_blank')
         bodyPose = ml5.bodyPose(); // Load the bodyPose model: https://docs.ml5js.org/#/reference/bodypose
       }
       

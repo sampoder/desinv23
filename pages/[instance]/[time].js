@@ -24,8 +24,8 @@ function sketch(p5) {
   };
 
   p5.setup = () => {
-    p5.createCanvas(p5.windowWidth, p5.windowHeight, p5.WEBGL);
-    p5.frameRate(60);
+    p5.createCanvas(p5.windowWidth, p5.windowHeight);
+    p5.frameRate(20);
   };
 
   p5.draw = () => {
@@ -36,7 +36,6 @@ function sketch(p5) {
       } else {
         img.resize(p5.windowWidth, 0)
       }
-      
       p5.imageMode(p5.CENTER)
       p5.image(
         img,

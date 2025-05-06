@@ -3,7 +3,6 @@
 import { put } from '@vercel/blob';
 
 export default async function handler(req, res) {
-  console.log(req.body.image)
   const blob = await put(`${req.body.instanceId}/${req.body.time}`, await (await fetch(req.body.image)).blob(), {
     access: 'public',
     contentType: "image/png"
@@ -12,3 +11,10 @@ export default async function handler(req, res) {
   return res.json(blob);
 }
 
+export const config = {
+    api: {
+        bodyParser: {
+            sizeLimit: '4mb'
+        }
+    }
+}

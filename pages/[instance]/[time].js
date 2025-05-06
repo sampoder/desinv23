@@ -30,12 +30,18 @@ function sketch(p5) {
 
   p5.draw = () => {
     if (images.length > 0) {
+      let img = images.length == 1 ? images[0] : images.shift()
+      if(p5.windowHeight > p5.windowWidth) {
+        img.resize(0, p5.windowHeight)
+      } else {
+        img.resize(p5.windowWidth, 0)
+      }
+      
+      p5.imageMode(p5.CENTER)
       p5.image(
-        images.length == 1 ? images[0] : images.shift(),
-        -(p5.windowWidth / 2),
-        -(p5.windowHeight / 2),
-        p5.windowWidth,
-        p5.windowHeight,
+        img,
+        0,
+        0,
       );
     }
   };
@@ -99,20 +105,20 @@ export default function Viewer({ blobs }) {
         <div
           style={{
             position: "absolute",
-            top: 16,
+            bottom: 16,
             left: 16,
-            width: '30px',
-            height: '30px',
+            width: '100vw',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: "black",
-            padding: "8px",
-            borderRadius: 4,
+            fontFamily: 'system-ui',
+            fontSize: 28
           }}
           onClick={() => setViewCount(viewCount + 1)}
         >
-          🔁
+          <div style={{background: "black", padding: "16px 32px", borderRadius: 8, display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center', cursor: 'pointer'}}>🔁 <span style={{ display: 'inline-block', marginLeft: '12px', fontWeight: 800, transform: 'translateY(-0.5px)' }}>Replay</span></div>
         </div>
       </div>
   
@@ -123,7 +129,7 @@ export async function getServerSideProps({ req, res, params }) {
   let { blobs } = await list({ prefix: params.instance });
   blobs = blobs
     .filter(
-      (blob) => parseInt(blob.pathname.split("/")[1]) > parseInt(params.time),
+      (blob) => parseInt(blob.pathname.split("/")[1]) <= parseInt(params.time),
     )
     .map((blob) => ({
       url: blob.url,

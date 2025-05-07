@@ -79,13 +79,13 @@ export default function Viewer({ blobs }) {
         >
           Loading...
         </div>
-      ) : <img src={images[count] || images[images.length - 1]} style={{ objectFit: 'cover', height: '100vh', width: '100vw'}} />}
+      ) : <img src={images[count] || images[images.length - 1]} style={{ objectFit: 'cover', height: '100dvh', width: '100dvw', objectPosition: 'center'}} />}
       <div
         style={{
           position: "absolute",
           bottom: 16,
           left: 16,
-          width: '100vw',
+          width: '100dvw',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

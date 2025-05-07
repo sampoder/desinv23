@@ -18,7 +18,7 @@ function sketch(p5) {
 
   p5.updateWithProps = (props) => {
     if (props.images) {
-      images = [...props.images.map((image, index) => p5.loadImage(image))];
+      images = [];
       console.log(props.images)
     }
   };

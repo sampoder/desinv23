@@ -24,7 +24,7 @@ function sketch(p5) {
   };
 
   p5.setup = () => {
-    p5.createCanvas(p5.displayWidth, p5.displayHeight);
+    p5.createCanvas(p5.displayWidth, p5.displayHeight, p5.WEBGL);
     p5.frameRate(5);
   };
 

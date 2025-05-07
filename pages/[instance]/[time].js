@@ -34,7 +34,7 @@ function sketch(p5) {
       if(p5.windowHeight > p5.windowWidth) {
         img.resize(0, p5.windowHeight)
       } else {
-        img.resize(p5.windowWidth, 0)
+        img.resize(200, 0)
       }
       p5.imageMode(p5.CENTER)
       p5.image(

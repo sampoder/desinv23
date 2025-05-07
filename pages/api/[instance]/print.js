@@ -22,6 +22,10 @@ export async function getBlob(instance){
 }
 
 export default async function handler(req, res) {
+  let configItems = await getAll();
+  configItems = Object.entries(configItems)
+  configItems = configItems.sort((a, b) => parseInt(b[0]) - parseInt(a[0]))
   
-  return res.json({blob: await getBlob(req.query.instance)});
+  let displaying = configItems[0][0]
+  return res.json({blob: await getBlob(req.query.instance), url: `https://photobooth.sampoder.com/${req.query.instance}/${displaying}`});
 }

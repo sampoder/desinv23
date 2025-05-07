@@ -25,14 +25,14 @@ function sketch(p5) {
 
   p5.setup = () => {
     p5.createCanvas(p5.windowWidth, p5.windowHeight);
-    p5.frameRate(20);
+    p5.frameRate(5);
   };
 
   p5.draw = () => {
     if (images.length > 0) {
       let img = images.length == 1 ? images[0] : images.shift()
-      if(300 > 200) {
-        img.resize(0, 200)
+      if(p5.windowHeight > p5.windowWidth) {
+        img.resize(0, p5.windowHeight)
       } else {
         img.resize(200, 0)
       }

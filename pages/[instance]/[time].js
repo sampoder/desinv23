@@ -18,7 +18,7 @@ function sketch(p5) {
 
   p5.updateWithProps = (props) => {
     if (props.images) {
-      images = [];
+      images = [...props.images.map((image, index) => p5.loadImage(image))];
       console.log(props.images)
     }
   };
@@ -31,10 +31,10 @@ function sketch(p5) {
   p5.draw = () => {
     if (images.length > 0) {
       let img = images.length == 1 ? images[0] : images.shift()
-      if(p5.windowHeight > p5.windowWidth) {
-        img.resize(0, p5.windowHeight)
+      if(300 > 200) {
+        img.resize(0, 200)
       } else {
-        img.resize(p5.windowWidth, 0)
+        img.resize(200, 0)
       }
       p5.imageMode(p5.CENTER)
       p5.image(

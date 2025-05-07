@@ -24,20 +24,25 @@ function sketch(p5) {
   };
 
   p5.setup = () => {
-    p5.createCanvas(p5.displayWidth, p5.displayHeight, p5.WEBGL);
+    p5.createCanvas(p5.windowWidth, p5.windowHeight, p5.WEBGL);
     p5.frameRate(5);
   };
 
   p5.draw = () => {
     if (images.length > 0) {
       let img = images.length == 1 ? images[0] : images.shift()
-      img.resize(600, 0)
+      if(p5.windowHeight > p5.windowWidth) {
+        img.resize(0, p5.windowHeight)
+      } else {
+        img.resize(p5.windowWidth, 0)
+      }
       p5.imageMode(p5.CENTER)
       p5.image(
         img,
         0,
         0,
       );
+      p5.noLoop();
     }
   };
 }

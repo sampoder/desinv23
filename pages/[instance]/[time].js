@@ -5,11 +5,17 @@ import { list } from "@vercel/blob";
 import dynamic from "next/dynamic";
 import { useEffect, useState, useRef } from "react";
 
+// this function is used to limit the amount of images to 350
+// because a browser can't render more than that.
+// it creates a 350-length array and then fills it in with equally spaced apart items
+
 function sampleArray(arr) {
   if (arr.length <= 350) return arr;
-  const step = (arr.length - 1) / 349; // 349 gaps for 350 points including the end
+  const step = (arr.length - 1) / 349;
   return Array.from({ length: 350 }, (_, i) => arr[Math.round(i * step)]);
 }
+
+// sourced from https://overreacted.io/making-setinterval-declarative-with-react-hooks/
 
 function useInterval(callback, delay) {
   const savedCallback = useRef();
@@ -35,6 +41,8 @@ export default function Viewer({ blobs }) {
   const router = useRouter();
   const [images, setImages] = useState([]);
 
+  // sourced / adapted from https://stackoverflow.com/questions/44698967/requesting-blob-images-and-transforming-to-base64-with-fetch-api
+  // used so that I can fetch them all at once
   const imageUrlToBase64 = async (url) => {
     const response = await fetch(url);
     const blob = await response.blob();
@@ -57,17 +65,18 @@ export default function Viewer({ blobs }) {
         setImages(values);
       },
     );
-  }, []);
+  }, []); // this takes all the images, downloads them, and turns them into base64
   
   let [count, setCount] = useState(0);
   
-  useInterval(() => {
-    // Your custom logic here
+  useInterval(() => { // render a new image every tenth of a second
     setCount(count + 1);
   }, 100);
 
   return (
     <div>
+      { // either displays a loading screen or the current image being displayed
+      }
       {!(images.length > 0) ? (
         <div
           style={{
@@ -118,6 +127,6 @@ export async function getServerSideProps({ req, res, params }) {
       url: blob.url,
       timestamp: parseInt(blob.pathname.split("/")[1]),
     }));
-  blobs = sampleArray(blobs);
+  blobs = sampleArray(blobs); // get all the images before and at the timestamp
   return { props: { blobs } };
 }

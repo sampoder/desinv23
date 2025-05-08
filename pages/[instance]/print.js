@@ -1,5 +1,7 @@
 "use client";
 
+// this page displays the most recent capture and gives the person running the piece a tool to print that capture
+
 import { useRouter } from "next/router";
 import { list } from "@vercel/blob";
 import dynamic from "next/dynamic";
@@ -15,10 +17,13 @@ import useSWR from 'swr'
 const fetcher = (...args) => fetch(...args).then(res => res.json())
 
 export default function Viewer({ blob, instance }) {
-  
+
+  // constantly refreshing the data
   const { data } = useSWR(`/api/${instance}/print`, fetcher, { refreshInterval: 1000 })
 
   function exportAsPDF() {
+    // adapted from https://stackoverflow.com/questions/63527772/how-to-print-full-screen-using-jspdf-and-html2canvas
+    // takes an image of the page and places it in a PDF and then saves it
     html2canvas(document.querySelector(`#capture`), { allowTaint: true, useCORS:true }).then(canvas => {
       let dataURL = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
@@ -57,6 +62,7 @@ export default function Viewer({ blob, instance }) {
   );
 }
 
+// get the blob - see its file for docs
 export async function getServerSideProps({ req, res, params }) {
   const blob = await getBlob()
   console.log(blob)

@@ -1,0 +1,166 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Photo Booth</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+    <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@1/lib/addons/p5.sound.min.js"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📸</text></svg>">
+
+  </head>
+
+  <body>
+    <div style="width: 100vw; position: absolute; top: 0; left: 0; background: rgba(0, 0, 0, 0.5); padding: 24px; font-size: 36px; text-align: center; color: white; font-weight: bold; font-family: 'Futura'; display: none" id="captured">
+      📸 Captured!
+    </div>
+    <script>
+      let video;
+      let bodyPose;
+      let poses = [];
+      let emojis = [];
+      let curr_emojis = [];  // keep track of emojis for people currently in the frame
+      let connections;
+      let times = new Set(); // used to prevent saving the same images
+      let saves = new Set(); // used to prevent double capturing
+      let instanceId = `${Math.random()}`;
+
+      // this function is called and runs in the background to save images to the DB via API route
+      function saveFrame(frames) {
+        let frame = frames[0];
+        fetch("/api/save", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            image: frame.imageData,
+            time: frame.filename,
+            instanceId,
+          }),
+        });
+      }
+      
+      function preload() {
+        instanceId = prompt("What should this instance be?") // used to allow it to be displayed multiple times
+        window.open(`https://photobooth.sampoder.com/${instanceId}/print`, '_blank')
+        bodyPose = ml5.bodyPose(); // Load the bodyPose model: https://docs.ml5js.org/#/reference/bodypose
+      }
+      
+      function setup() {
+        createCanvas(windowWidth, windowHeight); // fill the screen
+      
+        // Create the video and hide it, because 
+        video = createCapture(VIDEO);
+        video.size(windowWidth, windowHeight);
+        video.hide();
+      
+        // Start detecting poses in the webcam video
+        bodyPose.detectStart(video, r => poses = r);
+        connections = bodyPose.getSkeleton();
+        
+        colours = [
+          [130, 211, 27],
+          [255, 204, 0],
+          [18, 150, 224],
+          [252, 183, 27]
+        ] // randomise the background colour
+        
+        emojis = [
+          '😄','😃','😀','😊', '😉','😍','😘','😚','😗','😙','😜','😝','😛','😳','😁','😔','😌','😒','😞','😣','😢','😂','😭','😪','😥','😰','😅','😓','😩','😫','😨','😱','😠','😡','😤','😖','😆','😋','😷','😎','😴','😵','😲','😟','😦','😧','😈','👿','😮','😬','😐','😕','😯','😶','😇','😏','😑','👶','👦','👧','👨','👩','👴','👵','👱','👼','👸','😺','😸','😻','😽','😼','🙀','😿','😹','😾','👹','👺','🙈','🙉','🙊','💀','👽','💩'
+        ] // randomise the emojis people get
+      }
+      
+      let c;
+      let colours;
+      let flag = false;
+      
+      function draw() {  
+        
+        if(poses.length == 0 && !flag) { // change the colour of the background when there's no one in the frame
+          c = random(colours);
+          flag = true;
+        } else if (poses.length > 0) {
+          flag = false;
+        }
+
+        // assign everyone an emoji that ~ sticks to them
+        if(curr_emojis.length > poses.length) {
+          curr_emojis = curr_emojis.slice(0, poses.length)
+        } else if (curr_emojis.length < poses.length) {
+          curr_emojis = poses.map((p, i) => curr_emojis[i] || random(emojis))
+        }
+
+        // add noise to the background to make it feel like time is passing
+        background(color(c[0] * 0.75 + c[0] * 0.65 * noise(frameCount * 0.005), c[1] * 0.75 + c[1] * 0.65 * noise(frameCount * 0.005), c[2] * 0.75 + c[2] * 0.65 * noise(frameCount * 0.005)));
+
+        for (let i = 0; i < poses.length; i++) {
+          let pose = poses[i]
+          for (let j = 0; j < connections.length; j++) // draw every connection between body parts, refer to diagram in https://docs.ml5js.org/#/reference/bodypose?id=bodyposedetectstart
+          {
+            let pointAIndex = connections[j][0]
+            let pointBIndex = connections[j][1]
+            if( pointAIndex >= 5 && pointBIndex >= 5) {
+              let pointA = pose.keypoints[pointAIndex]
+              let pointB = pose.keypoints[pointBIndex]
+              if (pointA.confidence > 0.1 && pointB.confidence > 0.1)
+              {
+                stroke(255, 255, 255)
+                strokeWeight(30)
+                line(pointA.x, pointA.y, pointB.x, pointB.y)
+              }
+            }
+          }
+        } 
+        noStroke()
+        for (let i = 0; i < poses.length; i++) {
+          let pose = poses[i]
+          if(pose.left_wrist.confidence > 0.1) { // replace peoples' wrists with circles
+            circle(pose.left_wrist.x, pose.left_wrist.y, 75);
+          }
+          if(pose.right_wrist.confidence > 0.1) {
+            circle(pose.right_wrist.x, pose.right_wrist.y, 75);
+          }
+          if(pose.nose.confidence > 0.1 && pose.left_ear.confidence > 0.1) { // put emojis on peoples' faces, also draw a circle
+            circle(pose.nose.x, pose.nose.y, Math.abs(pose.nose.x - pose.left_ear.x) * 3)
+            textSize(Math.abs(pose.nose.x - pose.left_ear.x) * 2.5);
+            text(curr_emojis[i], pose.nose.x - (Math.abs(pose.nose.x - pose.left_ear.x) * 2.5) * 0.5, pose.nose.y + (Math.abs(pose.nose.x - pose.left_ear.x) * 2.5) * 0.38);
+          }
+        }
+        
+        let time = new Date().getTime();
+        let second = time - (time % 1000); // only save every second
+        let saveID = time - (time % 10000); // only take a capture every 10 secons
+        if (!times.has(second) && poses.length > 0) {
+          console.log("Queuing...");
+          times.add(second);
+          saveFrames(second, null, 1, 1, saveFrame); // save all frames
+          let save = true
+          for (let i = 0; i < poses.length; i++) {
+            let pose = poses[i]
+            if(pose.right_wrist.y < pose.nose.y && pose.left_wrist.y < pose.nose.y &&  pose.nose.confidence > 0.10 && (pose.left_wrist.confidence > 0.10 || pose.right_wrist.confidence > 0.10)) {
+              console.log("pose ready!") // check if everyone has their hands raised
+            } else {
+              save = false
+            }
+          }
+          if(save && poses.length > 0 && !saves.has(saveID)) { // if everyone has their hands raised "capture"
+            saves.add(saveID)
+            document.getElementById("captured").style.display = "block"
+            fetch(`/api/save/${second}`, { method: "POST" }).then(r => r.json()).then(r => {
+              console.log(instanceId)
+            })
+            setTimeout(() => {
+              document.getElementById("captured").style.display = "none"
+            }, 2000)
+          }
+          
+        }
+      }
+    </script>
+    <style>
+      body {
+        margin: 0
+      }
+    </style>
+  </body>
+</html>

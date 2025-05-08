@@ -3,6 +3,7 @@
 import { put } from '@vercel/blob';
 
 export default async function handler(req, res) {
+  console.log(`${req.body.instanceId}/${req.body.time}`)
   const blob = await put(`${req.body.instanceId}/${req.body.time}`, await (await fetch(req.body.image)).blob(), {
     access: 'public',
     contentType: "image/png"

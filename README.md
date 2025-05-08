@@ -1,6 +1,6 @@
 # 📸 Photo Booth (with a twist!)
 
-TLDR: a photo booth that gave everyone at the final showcase a momento of the showcase. Subjects are emojified and once you print the photo, you can scan the QR code / tap the NFC tag to see a timelapse of everything that was captured by the booth before hand.
+TLDR: a photo booth that gave everyone at the final showcase a momento of the showcase. Subjects are emojified and once you print the photo, you can scan the QR code / tap the NFC tag to see a timelapse of everything that was captured by the booth before hand. I built this for [DESINV 23](https://classes.berkeley.edu/content/2025-spring-desinv-23-1-lec-1), a class on creative programming & electronics at UC Berkeley.
 
 https://github.com/user-attachments/assets/1dbe0838-6b98-46c2-8fa6-ebf771533a5d
 

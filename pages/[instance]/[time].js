@@ -1,5 +1,7 @@
 "use client";
 
+// this is the page rendered when you scan the QR code or tap the NFC tag, it lets you see what happened with all the people before you
+
 import { useRouter } from "next/router";
 import { list } from "@vercel/blob";
 import dynamic from "next/dynamic";

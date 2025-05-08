@@ -4,7 +4,7 @@ TLDR: a photo booth that gave everyone at the final showcase a momento of the sh
 
 https://github.com/user-attachments/assets/1dbe0838-6b98-46c2-8fa6-ebf771533a5d
 
-# Showcase / description of finished piece
+## Showcase / description of finished piece
 
 There are two components to this project that I want to discuss: the artwork being displayed on the screen and the printing process.
 
@@ -12,7 +12,7 @@ You'll notice that the artwork displayed is slightly inhuman. Just as they had b
 
 I wanted to create printed momentos because I really liked the idea of people having something they could take home and hang up on their wall. Throughout the semester I've been experimenting with this idea of collaborative art. That's where the idea of showing a timelapse of everything leading up to the photo being taken. Printed pages are somewhat limited but by sticking an NFC tag on the back I could make them interactive.
 
-# Process
+## Process & how I built it
 
 So the idea really started with the printing part of the project. I was a big fan of allowing people to print out a memonto and tap them to see a timelapse. The idea was flexible enough that it could work for any artwork (or essentially any visual artwork). So then the question was what should my art be?
 
@@ -29,3 +29,13 @@ This was the balancing act project for reference:
 I used a couple of things to build the project. The first thing was p5.js, which I used to create the artwork. I combined p5.js with ml5.js again, as I had done with the balancing act project. I used [PoseNet](https://blog.tensorflow.org/2018/05/real-time-human-pose-estimation-in.html) to do the pose detection and tracking.
 
 To generate the timelapses, I need a bunch of images of the artwork over time. To acheive this, I'm sending an image every 10 seconds to an API route that saves the image in [Vercel Blob](https://vercel.com/docs/vercel-blob). I'm generating the pages to print using a webpage built in React that pulls from an API. When someone raises their hands (the trigger for taking the photo), it saves that timestamp and then that timestamp is rendered on the print page (a page I use to print the postcards). I'm working within the Next.js framework to created the React pages and the API routes.
+
+## Reflection
+
+Obviously, I'm disappointed that I couldn't fully demo it at the showcase. From the parts that I were able to demo, I noticed that people engaged really well with artwork. People loved seeing themselves with an emoji on their head - some were happy with the emoji they got, some less so (in a joking way).
+
+Building this sytem was an uphill battle for sure. There were many moving parts to the system but when it all came together I was really proud! Watching the demo video back, I was pretty chuffed because everything worked. And there were times where I didn't feel like it was going to work.
+
+I do think the strength of the piece was the printing part. Maybe I could have been more ambitious with the artwork - it was pretty similar to my balancing act piece and I could have used this as a chance to try something new. Just no ideas came to mind.
+
+I learnt my lesson when it comes to relying on the internet. I won't do that next time I need to demo something!

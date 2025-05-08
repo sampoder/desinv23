@@ -1,3 +1,6 @@
+// this route stores that someone wants to "take a photo", the most recently saved timestamp is used when printing
+// I'm using Vercel's edge config as a janky database because it's fast to read from.
+
 export default async function handler(req, res) {
   const updateEdgeConfig = await fetch(
     'https://api.vercel.com/v1/edge-config/ecfg_athi2rt3yset3ky6rb6deg6brcuo/items',

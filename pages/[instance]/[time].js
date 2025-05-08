@@ -5,6 +5,12 @@ import { list } from "@vercel/blob";
 import dynamic from "next/dynamic";
 import { useEffect, useState, useRef } from "react";
 
+function sampleArray(arr) {
+  if (arr.length <= 350) return arr;
+  const step = (arr.length - 1) / 349; // 349 gaps for 350 points including the end
+  return Array.from({ length: 350 }, (_, i) => arr[Math.round(i * step)]);
+}
+
 function useInterval(callback, delay) {
   const savedCallback = useRef();
  
@@ -112,6 +118,6 @@ export async function getServerSideProps({ req, res, params }) {
       url: blob.url,
       timestamp: parseInt(blob.pathname.split("/")[1]),
     }));
-  console.log(blobs);
+  blobs = sampleArray(blobs);
   return { props: { blobs } };
 }
